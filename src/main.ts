@@ -1,18 +1,21 @@
-import { bangs } from "./bang";
+import * as bangsRaw from './bang.json'
 import "./global.css";
+import { Bangs } from './bang.type.ts'
+
+const bangs = bangsRaw as unknown as Bangs
 
 function noSearchDefaultPageRender() {
   const app = document.querySelector<HTMLDivElement>("#app")!;
   app.innerHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
       <div class="content-container">
-        <h1>Und*ck</h1>
-        <p>DuckDuckGo's bang redirects are too slow. Add the following URL as a custom search engine to your browser. Enables <a href="https://duckduckgo.com/bang.html" target="_blank">all of DuckDuckGo's bangs.</a></p>
+        <h1 style="margin-bottom: 1rem;">Und*ck Fork</h1>
+        <p>Optimized version of Theo's Unduck. DuckDuckGo's bang redirects are too slow. Add the following URL as a custom search engine to your browser. Enables <a href="https://duckduckgo.com/bang.html" target="_blank">all of DuckDuckGo's bangs.</a></p>
         <div class="url-container"> 
           <input 
             type="text" 
             class="url-input"
-            value="https://unduck.link?q=%s"
+            value="https://search.mird.uk?q=%s"
             readonly 
           />
           <button class="copy-button">
@@ -21,11 +24,11 @@ function noSearchDefaultPageRender() {
         </div>
       </div>
       <footer class="footer">
-        <a href="https://t3.chat" target="_blank">t3.chat</a>
+        <a href="https://mird.uk" target="_blank">mird.uk</a>
         •
         <a href="https://x.com/theo" target="_blank">theo</a>
         •
-        <a href="https://github.com/t3dotgg/unduck" target="_blank">github</a>
+        <a href="https://github.com/mirdukkk/unduck" target="_blank">github</a>
       </footer>
     </div>
   `;
@@ -45,7 +48,7 @@ function noSearchDefaultPageRender() {
 }
 
 const LS_DEFAULT_BANG = localStorage.getItem("default-bang") ?? "g";
-const defaultBang = bangs.find((b) => b.t === LS_DEFAULT_BANG);
+const defaultBang = bangs[LS_DEFAULT_BANG]
 
 function getBangredirectUrl() {
   const url = new URL(window.location.href);
@@ -58,7 +61,7 @@ function getBangredirectUrl() {
   const match = query.match(/!(\S+)/i);
 
   const bangCandidate = match?.[1]?.toLowerCase();
-  const selectedBang = bangs.find((b) => b.t === bangCandidate) ?? defaultBang;
+  const selectedBang = bangs[bangCandidate ?? defaultBang.t];
 
   // Remove the first bang from the query
   const cleanQuery = query.replace(/!\S+\s*/i, "").trim();
